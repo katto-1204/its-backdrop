@@ -131,6 +131,13 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  pointer-events: none;
+}
+
+/* Allow interaction with header and footer */
+.header,
+.footer {
+  pointer-events: auto;
 }
 
 /* Header */

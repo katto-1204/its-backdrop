@@ -5,7 +5,7 @@ import { Canvas, useFrame, RootState, useThree } from '@react-three/fiber';
 import { Mesh, Object3D, MeshStandardMaterial, MeshPhysicalMaterial } from 'three';
 import { Environment, useGLTF, Float, PresentationControls } from '@react-three/drei';
 
-function Model() {
+function Model({ rotationSpeed = 1.0 }: { rotationSpeed?: number }) {
     const { scene } = useGLTF('/bsit_keychain_Keychain_featuring_computer_related_miniatures_Hun.glb');
     const { viewport } = useThree();
     const meshRef = useRef<Mesh>(null);
@@ -37,7 +37,8 @@ function Model() {
 
     useFrame((state: RootState, delta: number) => {
         if (meshRef.current) {
-            meshRef.current.rotation.y += delta * 0.2;
+            // Apply the rotationSpeed multiplier to the base rotation speed
+            meshRef.current.rotation.y += delta * 0.2 * rotationSpeed;
         }
     });
 
@@ -52,15 +53,17 @@ function Model() {
 }
 
 
-export default function Scene() {
+export default function Scene({ rotationSpeed = 1.0, transparentMode = false }: { rotationSpeed?: number, transparentMode?: boolean }) {
     return (
         <div className="w-full h-full absolute inset-0 z-0">
-            <Canvas camera={{ position: [0, 0, 10], fov: 45 }} gl={{ antialias: true, alpha: true }}>
+            <Canvas camera={{ position: [0, 0, 10], fov: 45 }} gl={{ antialias: true, alpha: true, preserveDrawingBuffer: true }}>
                 <ambientLight intensity={1.5} />
                 <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={2} color="#ffffff" />
                 <pointLight position={[-10, -10, -10]} intensity={1.5} color="#ffffff" />
 
                 <Environment preset="city" />
+
+                {!transparentMode && <fog attach="fog" args={['#000000', 5, 30]} />}
 
 
                 <Suspense fallback={null}>
@@ -69,7 +72,7 @@ export default function Scene() {
                         rotation={[0, 0, 0]}
                     >
                         <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
-                            <Model />
+                            <Model rotationSpeed={rotationSpeed} />
                         </Float>
                     </PresentationControls>
                 </Suspense>

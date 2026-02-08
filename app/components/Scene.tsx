@@ -2,7 +2,7 @@
 
 import React, { Suspense, useRef } from 'react';
 import { Canvas, useFrame, RootState, useThree } from '@react-three/fiber';
-import { Mesh, Object3D, MeshStandardMaterial, MeshPhysicalMaterial } from 'three';
+import { Mesh, Object3D, MeshStandardMaterial, MeshPhysicalMaterial, WebGLRenderer } from 'three';
 import { Environment, useGLTF, Float, PresentationControls } from '@react-three/drei';
 
 function Model({ rotationSpeed = 1.0 }: { rotationSpeed?: number }) {
@@ -53,27 +53,56 @@ function Model({ rotationSpeed = 1.0 }: { rotationSpeed?: number }) {
 }
 
 
-export default function Scene({ rotationSpeed = 1.0, transparentMode = false }: { rotationSpeed?: number, transparentMode?: boolean }) {
+function SceneManager({ bgMode, isRecording }: { bgMode: string, isRecording: boolean }) {
+    const { gl } = useThree();
+
+    React.useEffect(() => {
+        if (bgMode === 'transparent') {
+            gl.setClearColor(0xffffff, 0);
+            gl.setClearAlpha(0);
+        } else if (bgMode === 'green') {
+            gl.setClearColor(0x00ff00, 1);
+            gl.setClearAlpha(1);
+        } else if (bgMode === 'white') {
+            gl.setClearColor(0xffffff, 1);
+            gl.setClearAlpha(1);
+        } else {
+            gl.setClearColor(0x000000, 1);
+            gl.setClearAlpha(1);
+        }
+        gl.clear();
+    }, [gl, bgMode]);
+
+    return null;
+}
+
+export default function Scene({ rotationSpeed = 1.0, isRecording = false, bgMode = 'black' }: { rotationSpeed?: number, isRecording?: boolean, bgMode?: 'transparent' | 'green' | 'black' | 'white' }) {
     return (
         <div className="w-full h-full absolute inset-0 z-0">
-            <Canvas camera={{ position: [0, 0, 10], fov: 45 }} gl={{ antialias: true, alpha: true, preserveDrawingBuffer: true }}>
-                <ambientLight intensity={1.5} />
+            <Canvas
+                camera={{ position: [0, 0, 10], fov: 45 }}
+                gl={{
+                    antialias: true,
+                    alpha: true,
+                    preserveDrawingBuffer: true,
+                    premultipliedAlpha: false
+                }}
+            >
+                <SceneManager bgMode={bgMode} isRecording={isRecording} />
+                <ambientLight intensity={bgMode === 'white' ? 0.5 : 1.5} />
                 <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={2} color="#ffffff" />
-                <pointLight position={[-10, -10, -10]} intensity={1.5} color="#ffffff" />
+                <pointLight position={[-10, -10, -10]} intensity={bgMode === 'white' ? 0.5 : 1.5} color="#ffffff" />
 
-                <Environment preset="city" />
+                <Environment preset="city" background={false} />
 
-                {!transparentMode && <fog attach="fog" args={['#000000', 5, 30]} />}
-
+                {bgMode === 'black' && !isRecording && <fog attach="fog" args={['#000000', 5, 30]} />}
 
                 <Suspense fallback={null}>
                     <PresentationControls
                         global
                         rotation={[0, 0, 0]}
                     >
-                        <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
-                            <Model rotationSpeed={rotationSpeed} />
-                        </Float>
+                        <Model rotationSpeed={rotationSpeed} />
                     </PresentationControls>
                 </Suspense>
             </Canvas>

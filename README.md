@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ITS Backdrop - Interactive 3D Landing Page
 
-## Getting Started
+A high-performance, cinematic 3D landing page built with Next.js, React Three Fiber, and Tailwind CSS. Featuring an interactive chrome-finished keychain as a centerpiece.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Interactive 3D Centerpiece**: High-quality GLB model with premium chrome shaders using `MeshPhysicalMaterial`.
+- **Dynamic Background Branding**: Massive "World of IT" logo with toggle controls and responsive scaling.
+- **Cinematic Environment**: Pure black aesthetic with optimized "City" preset lighting for realistic metal reflections.
+- **Capture & Export**: Integrated MediaRecorder engine to download high-quality (60fps) animations with transparent background support.
+- **Responsive Design**: Full viewport-aware scaling for both the 3D scene and layout elements.
+- **Animation Controls**: Real-time speed adjustment (0.5x to 5x) for the model's movement.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Technology Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Framework**: Next.js 14 (App Router)
+- **3D Engine**: React Three Fiber (R3F)
+- **3D Utilities**: @react-three/drei
+- **Styling**: Tailwind CSS
+- **Recording**: MediaRecorder API + captureStream
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Setup and Development
 
-## Learn More
+1. **Install dependencies**:
+   ```bash
+   npm install
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+2. **Run the development server**:
+   ```bash
+   npm run dev
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. **Production Build**:
+   ```bash
+   npm run build
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Key Components
 
-## Deploy on Vercel
+- `app/page.tsx`: Main entry point containing the UI layer, recording logic, and logo toggle state.
+- `app/components/Scene.tsx`: The 3D engine implementation, including viewport scaling, lighting, and chromic material application.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Controls
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Hide/Show Logo**: Toggles the visibility of the background branding.
+- **Speed Selector**: Adjusts the rotation/animation speed of the keychain miniatures.
+- **Capture Scene**: Records a 10-second high-quality clip of the 3D scene.
